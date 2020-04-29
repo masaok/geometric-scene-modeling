@@ -12,20 +12,17 @@
  did for the project.
  ***/
 
-#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 #ifdef __APPLE__
-#include <GLUT/glut.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
+  #include <GLUT/glut.h>
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
 #else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+  #include <GL/glut.h>
 #endif
-
-#pragma GCC diagnostic pop
 
 #include <math.h>
 #include <stdlib.h>
@@ -229,45 +226,45 @@ void display_func() {
 
   // TODO: Trying to fix the flicker by borrowing from cube assignment
 
-  // World model parameters
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+  // // World model parameters
+  // glMatrixMode(GL_MODELVIEW);
+  // glLoadIdentity();
 
-  vector<GLfloat> points = {
-    // Front plane
-    +1.0,   +1.0,   +1.0,
-    -1.0,   +1.0,   +1.0,
-    -1.0,   -1.0,   +1.0,
-    +1.0,   -1.0,   +1.0,
-    // Back plane
-    +1.0,   +1.0,   -1.0,
-    -1.0,   +1.0,   -1.0,
-    -1.0,   -1.0,   -1.0,
-    +1.0,   -1.0,   -1.0,
-    // Right
-    +1.0,   +1.0,   -1.0,
-    +1.0,   +1.0,   +1.0,
-    +1.0,   -1.0,   +1.0,
-    +1.0,   -1.0,   -1.0,
-    // Left
-    -1.0,   +1.0,   -1.0,
-    -1.0,   +1.0,   +1.0,
-    -1.0,   -1.0,   +1.0,
-    -1.0,   -1.0,   -1.0,
-    // Top
-    +1.0,   +1.0,   +1.0,
-    -1.0,   +1.0,   +1.0,
-    -1.0,   +1.0,   -1.0,
-    +1.0,   +1.0,   -1.0,
-    // Bottom
-    +1.0,   -1.0,   +1.0,
-    -1.0,   -1.0,   +1.0,
-    -1.0,   -1.0,   -1.0,
-    +1.0,   -1.0,   -1.0,
-  };
+  // vector<GLfloat> points = {
+  //   // Front plane
+  //   +1.0,   +1.0,   +1.0,
+  //   -1.0,   +1.0,   +1.0,
+  //   -1.0,   -1.0,   +1.0,
+  //   +1.0,   -1.0,   +1.0,
+  //   // Back plane
+  //   +1.0,   +1.0,   -1.0,
+  //   -1.0,   +1.0,   -1.0,
+  //   -1.0,   -1.0,   -1.0,
+  //   +1.0,   -1.0,   -1.0,
+  //   // Right
+  //   +1.0,   +1.0,   -1.0,
+  //   +1.0,   +1.0,   +1.0,
+  //   +1.0,   -1.0,   +1.0,
+  //   +1.0,   -1.0,   -1.0,
+  //   // Left
+  //   -1.0,   +1.0,   -1.0,
+  //   -1.0,   +1.0,   +1.0,
+  //   -1.0,   -1.0,   +1.0,
+  //   -1.0,   -1.0,   -1.0,
+  //   // Top
+  //   +1.0,   +1.0,   +1.0,
+  //   -1.0,   +1.0,   +1.0,
+  //   -1.0,   +1.0,   -1.0,
+  //   +1.0,   +1.0,   -1.0,
+  //   // Bottom
+  //   +1.0,   -1.0,   +1.0,
+  //   -1.0,   -1.0,   +1.0,
+  //   -1.0,   -1.0,   -1.0,
+  //   +1.0,   -1.0,   -1.0,
+  // };
 
-  // GLfloat *scene_vertices = vector2array(SCENE);
-  GLfloat *scene_vertices = vector2array(points);
+  GLfloat *scene_vertices = vector2array(SCENE);
+  // GLfloat *scene_vertices = vector2array(points);
   GLfloat *color_vertices = vector2array(COLOR);
   // Pass the scene vertex pointer
   glVertexPointer(3,                // 3 components (x, y, z)
@@ -319,5 +316,3 @@ int main(int argc, char **argv) {
 
   return 0;
 }
-
-#pragma GCC diagnostic pop
