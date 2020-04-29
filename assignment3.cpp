@@ -165,6 +165,7 @@ vector<GLfloat> build_cube() {
   vector<GLfloat> result;
 
   // TODO: Creates a unit cube by transforming a set of planes
+  result = init_plane();
 
   return result;
 }
@@ -207,6 +208,7 @@ vector<GLfloat> init_scene() {
   vector<GLfloat> scene;
 
   // TODO: Build your scene here
+  scene = build_cube();
 
   return scene;
 }
@@ -225,7 +227,47 @@ void display_func() {
 
   // TODO: Rotate the scene using the scene vector
 
-  GLfloat *scene_vertices = vector2array(SCENE);
+  // TODO: Trying to fix the flicker by borrowing from cube assignment
+
+  // World model parameters
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  vector<GLfloat> points = {
+    // Front plane
+    +1.0,   +1.0,   +1.0,
+    -1.0,   +1.0,   +1.0,
+    -1.0,   -1.0,   +1.0,
+    +1.0,   -1.0,   +1.0,
+    // Back plane
+    +1.0,   +1.0,   -1.0,
+    -1.0,   +1.0,   -1.0,
+    -1.0,   -1.0,   -1.0,
+    +1.0,   -1.0,   -1.0,
+    // Right
+    +1.0,   +1.0,   -1.0,
+    +1.0,   +1.0,   +1.0,
+    +1.0,   -1.0,   +1.0,
+    +1.0,   -1.0,   -1.0,
+    // Left
+    -1.0,   +1.0,   -1.0,
+    -1.0,   +1.0,   +1.0,
+    -1.0,   -1.0,   +1.0,
+    -1.0,   -1.0,   -1.0,
+    // Top
+    +1.0,   +1.0,   +1.0,
+    -1.0,   +1.0,   +1.0,
+    -1.0,   +1.0,   -1.0,
+    +1.0,   +1.0,   -1.0,
+    // Bottom
+    +1.0,   -1.0,   +1.0,
+    -1.0,   -1.0,   +1.0,
+    -1.0,   -1.0,   -1.0,
+    +1.0,   -1.0,   -1.0,
+  };
+
+  // GLfloat *scene_vertices = vector2array(SCENE);
+  GLfloat *scene_vertices = vector2array(points);
   GLfloat *color_vertices = vector2array(COLOR);
   // Pass the scene vertex pointer
   glVertexPointer(3,                // 3 components (x, y, z)
