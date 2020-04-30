@@ -205,9 +205,9 @@ vector<GLfloat> init_scene() {
   vector<GLfloat> scene;
 
   // TODO: Build your scene here
-  scene = build_cube();
+  // scene = build_cube();
 
-  return scene;
+  return build_cube();
 }
 
 // Construct the color mapping of the scene
@@ -220,69 +220,25 @@ vector<GLfloat> init_color(vector<GLfloat> scene) {
 }
 
 void display_func() {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // TODO: Rotate the scene using the scene vector
-
-  // TODO: Trying to fix the flicker by borrowing from cube assignment
-
-  // // World model parameters
-  // glMatrixMode(GL_MODELVIEW);
-  // glLoadIdentity();
-
-  // vector<GLfloat> points = {
-  //   // Front plane
-  //   +1.0,   +1.0,   +1.0,
-  //   -1.0,   +1.0,   +1.0,
-  //   -1.0,   -1.0,   +1.0,
-  //   +1.0,   -1.0,   +1.0,
-  //   // Back plane
-  //   +1.0,   +1.0,   -1.0,
-  //   -1.0,   +1.0,   -1.0,
-  //   -1.0,   -1.0,   -1.0,
-  //   +1.0,   -1.0,   -1.0,
-  //   // Right
-  //   +1.0,   +1.0,   -1.0,
-  //   +1.0,   +1.0,   +1.0,
-  //   +1.0,   -1.0,   +1.0,
-  //   +1.0,   -1.0,   -1.0,
-  //   // Left
-  //   -1.0,   +1.0,   -1.0,
-  //   -1.0,   +1.0,   +1.0,
-  //   -1.0,   -1.0,   +1.0,
-  //   -1.0,   -1.0,   -1.0,
-  //   // Top
-  //   +1.0,   +1.0,   +1.0,
-  //   -1.0,   +1.0,   +1.0,
-  //   -1.0,   +1.0,   -1.0,
-  //   +1.0,   +1.0,   -1.0,
-  //   // Bottom
-  //   +1.0,   -1.0,   +1.0,
-  //   -1.0,   -1.0,   +1.0,
-  //   -1.0,   -1.0,   -1.0,
-  //   +1.0,   -1.0,   -1.0,
-  // };
-
-  GLfloat *scene_vertices = vector2array(SCENE);
-  // GLfloat *scene_vertices = vector2array(points);
-  GLfloat *color_vertices = vector2array(COLOR);
-  // Pass the scene vertex pointer
-  glVertexPointer(3,                // 3 components (x, y, z)
-                  GL_FLOAT,         // Vertex type is GL_FLOAT
-                  0,                // Start position in referenced memory
-                  scene_vertices);  // Pointer to memory location to read from
-
-  // Pass the color vertex pointer
-  glColorPointer(3,                // 3 components (r, g, b)
-                 GL_FLOAT,         // Vertex type is GL_FLOAT
-                 0,                // Start position in referenced memory
-                 color_vertices);  // Pointer to memory location to read from
-
-  // Draw quad point planes: each 4 vertices
-  glDrawArrays(GL_QUADS, 0, 4 * 6);
-
-  glFlush();  //Finish rendering
-  glutSwapBuffers();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // TODO: Rotate the scene using the scene vector
+    vector<GLfloat> scene = SCENE;
+    GLfloat* scene_vertices = vector2array(scene);
+    GLfloat* color_vertices = vector2array(COLOR);
+    // Pass the scene vertex pointer
+    glVertexPointer(3,                // 3 components (x, y, z)
+                    GL_FLOAT,         // Vertex type is GL_FLOAT
+                    0,                // Start position in referenced memory
+                    scene_vertices);  // Pointer to memory location to read from
+    // Pass the color vertex pointer
+    glColorPointer(3,                   // 3 components (r, g, b)
+                   GL_FLOAT,            // Vertex type is GL_FLOAT
+                   0,                   // Start position in referenced memory
+                   color_vertices);     // Pointer to memory location to read from
+    // Draw quad point planes: each 4 vertices
+    glDrawArrays(GL_QUADS, 0, scene.size()/3.0);
+    glFlush();			//Finish rendering
+    glutSwapBuffers();
 }
 
 void idle_func() {
