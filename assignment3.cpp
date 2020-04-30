@@ -270,11 +270,24 @@ vector<GLfloat> build_cube() {
   vector<GLfloat> back_trans = translation_matrix(0.0, 0.0, -0.5);
   vector<GLfloat> back_final = mat_mult(back_trans, back_rotated);
 
+  // West plane
+  vector<GLfloat> west_plane = init_plane();
+  vector<GLfloat> west_hom = to_homogeneous_coord(west_plane);
+
+  // West plane rotate
+  vector<GLfloat> west_rot_y = rotation_matrix_y(45);
+  vector<GLfloat> west_rotated = mat_mult(west_rot_y, west_hom);
+
+  // West plane move westward
+  vector<GLfloat> west_trans = translation_matrix(0.0, 0.0, -0.5);
+  vector<GLfloat> west_final = mat_mult(west_trans, west_rotated);
+
   // Concatenate all planes
   vector<GLfloat> concat;
   concat.insert( concat.end(), front_hom.begin(), front_hom.end() );
   concat.insert( concat.end(), translated.begin(), translated.end() );
   concat.insert( concat.end(), back_final.begin(), back_final.end() );
+  concat.insert( concat.end(), west_rotated.begin(), west_rotated.end() );
 
   // Return in cartesian coordinates
   return to_cartesian_coord(concat);
