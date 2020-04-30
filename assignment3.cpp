@@ -101,7 +101,25 @@ vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogeneous_coords) {
 vector<GLfloat> translation_matrix(float dx, float dy, float dz) {
   vector<GLfloat> translate_mat;
 
-  // TODO: Define translation matrix
+  translate_mat.push_back(1.0);
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(dx);
+
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(1.0);
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(dy);
+
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(1.0);
+  translate_mat.push_back(dz);
+
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(0.0);
+  translate_mat.push_back(1.0);
 
   return translate_mat;
 }
@@ -116,30 +134,95 @@ vector<GLfloat> scaling_matrix(float sx, float sy, float sz) {
 }
 
 // Definition of a rotation matrix about the x-axis theta degrees
-vector<GLfloat> rotation_matrix_x(float theta) {
-  vector<GLfloat> rotate_mat_x;
+vector<GLfloat> rotation_matrix_x (float theta) {
+    vector<GLfloat> rotate_mat_x;
 
-  // TODO: Define rotation matrix about the x-axis matrix
+    GLfloat cos_theta = cos(deg2rad(theta));
+    GLfloat sin_theta = sin(deg2rad(theta));
 
-  return rotate_mat_x;
+    rotate_mat_x.push_back(1.0);
+    rotate_mat_x.push_back(0.0);
+    rotate_mat_x.push_back(0.0);
+    rotate_mat_x.push_back(0.0);
+
+    rotate_mat_x.push_back(0.0);
+    rotate_mat_x.push_back(cos_theta);
+    rotate_mat_x.push_back(sin_theta * -1.0);
+    rotate_mat_x.push_back(0.0);
+
+    rotate_mat_x.push_back(0.0);
+    rotate_mat_x.push_back(sin_theta);
+    rotate_mat_x.push_back(cos_theta);
+    rotate_mat_x.push_back(0.0);
+
+    rotate_mat_x.push_back(0.0);
+    rotate_mat_x.push_back(0.0);
+    rotate_mat_x.push_back(0.0);
+    rotate_mat_x.push_back(1.0);
+
+    return rotate_mat_x;
 }
 
-// Definition of a rotation matrix about the y-axis by theta degrees
-vector<GLfloat> rotation_matrix_y(float theta) {
-  vector<GLfloat> rotate_mat_y;
+// Definition of a rotation matrix along the y-axis by theta degrees
+vector<GLfloat> rotation_matrix_y (float theta) {
+    vector<GLfloat> rotate_mat_y;
 
-  // TODO: Define rotation matrix about the y-axis matrix
+    GLfloat cos_theta = cos(deg2rad(theta));
+    GLfloat sin_theta = sin(deg2rad(theta));
 
-  return rotate_mat_y;
+    // Define the rotation matrix about the y-axis
+    rotate_mat_y.push_back(cos_theta);
+    rotate_mat_y.push_back(0.0);
+    rotate_mat_y.push_back(sin_theta * -1.0);
+    rotate_mat_y.push_back(0.0);
+
+    rotate_mat_y.push_back(0.0);
+    rotate_mat_y.push_back(1.0);
+    rotate_mat_y.push_back(0.0);
+    rotate_mat_y.push_back(0.0);
+
+    rotate_mat_y.push_back(sin_theta);
+    rotate_mat_y.push_back(0.0);
+    rotate_mat_y.push_back(cos_theta);
+    rotate_mat_y.push_back(0.0);
+
+    rotate_mat_y.push_back(0.0);
+    rotate_mat_y.push_back(0.0);
+    rotate_mat_y.push_back(0.0);
+    rotate_mat_y.push_back(1.0);
+
+    return rotate_mat_y;
 }
 
-// Definition of a rotation matrix about the z-axis by theta degrees
-vector<GLfloat> rotation_matrix_z(float theta) {
-  vector<GLfloat> rotate_mat_z;
+// Definition of a rotation matrix along the z-axis by theta degrees
+vector<GLfloat> rotation_matrix_z (float theta) {
+    vector<GLfloat> rotate_mat_z;
 
-  // TODO: Define rotation matrix about the z-axis matrix
+    GLfloat cos_theta = cos(deg2rad(theta));
+    GLfloat sin_theta = sin(deg2rad(theta));
 
-  return rotate_mat_z;
+    // Define the rotation matrix about the z-axis
+    rotate_mat_z.push_back(cos_theta);
+    rotate_mat_z.push_back(sin_theta * -1.0);
+    rotate_mat_z.push_back(0.0);
+    rotate_mat_z.push_back(0.0);
+
+    rotate_mat_z.push_back(sin_theta);
+    rotate_mat_z.push_back(cos_theta);
+    rotate_mat_z.push_back(0.0);
+    rotate_mat_z.push_back(0.0);
+
+    rotate_mat_z.push_back(0.0);
+    rotate_mat_z.push_back(0.0);
+    rotate_mat_z.push_back(1.0);
+    rotate_mat_z.push_back(0.0);
+
+    rotate_mat_z.push_back(0.0);
+    rotate_mat_z.push_back(0.0);
+    rotate_mat_z.push_back(0.0);
+    rotate_mat_z.push_back(1.0);
+
+    return rotate_mat_z;
 }
 
 // Perform matrix multiplication for A B
@@ -161,10 +244,27 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 vector<GLfloat> build_cube() {
   vector<GLfloat> result;
 
-  // TODO: Creates a unit cube by transforming a set of planes
-  result = init_plane();
+  // TODO: Create a unit cube by transforming a set of planes
 
-  return result;
+  // Front plane
+  vector<GLfloat> front_plane = init_plane();
+
+  // Convert to homogeneous coordinates
+  vector<GLfloat> front_hom = to_homogeneous_coord(front_plane);
+
+  // Create the translation matrix (move it forward)
+  vector<GLfloat> trans_mat = translation_matrix(0.0, 0.0, 0.5);
+
+  // Matrix mutiply by the translation matrix
+  vector<GLfloat> translated = mat_mult(trans_mat, front_hom);
+
+  // Concatenate the two planes
+  vector<GLfloat> concat;
+  concat.insert( concat.end(), front_hom.begin(), front_hom.end() );
+  concat.insert( concat.end(), translated.begin(), translated.end() );
+
+  // Return in cartesian coordinates
+  return to_cartesian_coord(concat);
 }
 
 /**************************************************
@@ -198,6 +298,11 @@ void init_camera() {
   glLoadIdentity();
 
   // TODO: Setup your camera here
+  // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
+  gluPerspective(50.0, 1.0, 2.0, 10.0);
+
+  // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
+  gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 // Construct the scene using objects built from cubes/prisms
@@ -205,9 +310,9 @@ vector<GLfloat> init_scene() {
   vector<GLfloat> scene;
 
   // TODO: Build your scene here
-  // scene = build_cube();
+  scene = build_cube();
 
-  return build_cube();
+  return scene;
 }
 
 // Construct the color mapping of the scene
