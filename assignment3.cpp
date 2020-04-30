@@ -258,10 +258,23 @@ vector<GLfloat> build_cube() {
   // Matrix mutiply by the translation matrix
   vector<GLfloat> translated = mat_mult(trans_mat, front_hom);
 
-  // Concatenate the two planes
+  // Back plane
+  vector<GLfloat> back_plane = init_plane();
+  vector<GLfloat> back_hom = to_homogeneous_coord(back_plane);
+
+  // Back plane rotate
+  vector<GLfloat> rot_y = rotation_matrix_y(180);
+  vector<GLfloat> back_rotated = mat_mult(rot_y, back_hom);
+
+  // Back plane move backward
+  vector<GLfloat> back_trans = translation_matrix(0.0, 0.0, -0.5);
+  vector<GLfloat> back_final = mat_mult(back_trans, back_rotated);
+
+  // Concatenate all planes
   vector<GLfloat> concat;
   concat.insert( concat.end(), front_hom.begin(), front_hom.end() );
   concat.insert( concat.end(), translated.begin(), translated.end() );
+  concat.insert( concat.end(), back_final.begin(), back_final.end() );
 
   // Return in cartesian coordinates
   return to_cartesian_coord(concat);
@@ -325,25 +338,25 @@ vector<GLfloat> init_color(vector<GLfloat> scene) {
 }
 
 void display_func() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // TODO: Rotate the scene using the scene vector
-    vector<GLfloat> scene = SCENE;
-    GLfloat* scene_vertices = vector2array(scene);
-    GLfloat* color_vertices = vector2array(COLOR);
-    // Pass the scene vertex pointer
-    glVertexPointer(3,                // 3 components (x, y, z)
-                    GL_FLOAT,         // Vertex type is GL_FLOAT
-                    0,                // Start position in referenced memory
-                    scene_vertices);  // Pointer to memory location to read from
-    // Pass the color vertex pointer
-    glColorPointer(3,                   // 3 components (r, g, b)
-                   GL_FLOAT,            // Vertex type is GL_FLOAT
-                   0,                   // Start position in referenced memory
-                   color_vertices);     // Pointer to memory location to read from
-    // Draw quad point planes: each 4 vertices
-    glDrawArrays(GL_QUADS, 0, scene.size()/3.0);
-    glFlush();			//Finish rendering
-    glutSwapBuffers();
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // TODO: Rotate the scene using the scene vector
+  vector<GLfloat> scene = SCENE;
+  GLfloat* scene_vertices = vector2array(scene);
+  GLfloat* color_vertices = vector2array(COLOR);
+  // Pass the scene vertex pointer
+  glVertexPointer(3,                // 3 components (x, y, z)
+                  GL_FLOAT,         // Vertex type is GL_FLOAT
+                  0,                // Start position in referenced memory
+                  scene_vertices);  // Pointer to memory location to read from
+  // Pass the color vertex pointer
+  glColorPointer(3,                   // 3 components (r, g, b)
+                  GL_FLOAT,            // Vertex type is GL_FLOAT
+                  0,                   // Start position in referenced memory
+                  color_vertices);     // Pointer to memory location to read from
+  // Draw quad point planes: each 4 vertices
+  glDrawArrays(GL_QUADS, 0, scene.size()/3.0);
+  glFlush();			//Finish rendering
+  glutSwapBuffers();
 }
 
 void idle_func() {
