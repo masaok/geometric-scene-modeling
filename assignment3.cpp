@@ -48,6 +48,27 @@ vector<GLfloat> COLOR;
  *                                                *
  *************************************************/
 
+// Variable debug convenience function
+// Usage: debug(__LINE__, "some label", the_variable);
+void debug(int line, string label, int value, string end = "" ) {
+    cout << line <<  ": " << label << ": " << value << end << endl << flush;
+}
+
+// Vector dump convenience function
+string dump(vector<GLfloat> points, int columns = 4) {
+  string str = "[\n";
+  for (int i = 0; i < points.size(); i++) {
+    GLfloat v = points[i];
+    str += "\t";
+    str += to_string(v);
+    if ((i + 1) % columns == 0) {
+        str += "\n";
+    }
+  }
+  str += "]\n";
+  return str;
+}
+
 // Initializes a square plane of unit lengths
 vector<GLfloat> init_plane() {
   vector<GLfloat> vertices = {
@@ -173,7 +194,7 @@ vector<GLfloat> rotation_matrix_y (float theta) {
     // Define the rotation matrix about the y-axis
     rotate_mat_y.push_back(cos_theta);
     rotate_mat_y.push_back(0.0);
-    rotate_mat_y.push_back(sin_theta * -1.0);
+    rotate_mat_y.push_back(sin_theta);
     rotate_mat_y.push_back(0.0);
 
     rotate_mat_y.push_back(0.0);
@@ -181,7 +202,7 @@ vector<GLfloat> rotation_matrix_y (float theta) {
     rotate_mat_y.push_back(0.0);
     rotate_mat_y.push_back(0.0);
 
-    rotate_mat_y.push_back(sin_theta);
+    rotate_mat_y.push_back(sin_theta * -1.0);
     rotate_mat_y.push_back(0.0);
     rotate_mat_y.push_back(cos_theta);
     rotate_mat_y.push_back(0.0);
@@ -378,6 +399,12 @@ void idle_func() {
 }
 
 int main(int argc, char **argv) {
+  vector<GLfloat> west_rot_y = rotation_matrix_y(45);
+  cout << dump(west_rot_y);
+
+  debug(__LINE__, "blah", 3);
+
+
   // Initialize GLUT
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
