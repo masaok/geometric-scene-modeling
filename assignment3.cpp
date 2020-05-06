@@ -372,6 +372,7 @@ vector<GLfloat> build_cube() {
 vector<GLfloat> build_table() {
   vector<GLfloat> result;
 
+  // Table Top
   vector<GLfloat> top = build_cube();
   vector<GLfloat> top_hom = to_homogeneous_coord(top);
   vector<GLfloat> scale_mat = scaling_matrix(1, 0.1, 1);
@@ -382,8 +383,6 @@ vector<GLfloat> build_table() {
   vector<GLfloat> sw_leg_hom = to_homogeneous_coord(sw_leg);
   vector<GLfloat> leg_scale_mat = scaling_matrix(0.1, 2, 0.1);
   vector<GLfloat> sw_leg_scaled = mat_mult(leg_scale_mat, sw_leg_hom);
-
-  // Southwest Leg Translate
   vector<GLfloat> sw_leg_trans = translation_matrix(-0.4, -1, 0.4);
   vector<GLfloat> sw_leg_moved = mat_mult(sw_leg_trans, sw_leg_scaled);
   sw_leg = sw_leg_moved;
@@ -392,8 +391,6 @@ vector<GLfloat> build_table() {
   vector<GLfloat> se_leg = build_cube();
   vector<GLfloat> se_leg_hom = to_homogeneous_coord(se_leg);
   vector<GLfloat> se_leg_scaled = mat_mult(leg_scale_mat, se_leg_hom);
-
-  // Southeast Leg Translate
   vector<GLfloat> se_leg_trans = translation_matrix(0.4, -1, 0.4);
   vector<GLfloat> se_leg_moved = mat_mult(se_leg_trans, se_leg_scaled);
   se_leg = se_leg_moved;
