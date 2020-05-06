@@ -277,7 +277,7 @@ vector<GLfloat> build_cube() {
   vector<GLfloat> trans_mat = translation_matrix(0.0, 0.0, 0.5);
 
   // Matrix mutiply by the translation matrix
-  vector<GLfloat> translated = mat_mult(trans_mat, front_hom);
+  vector<GLfloat> front_final = mat_mult(trans_mat, front_hom);
 
   // Back plane
   vector<GLfloat> back_plane = init_plane();
@@ -296,19 +296,57 @@ vector<GLfloat> build_cube() {
   vector<GLfloat> west_hom = to_homogeneous_coord(west_plane);
 
   // West plane rotate
-  vector<GLfloat> west_rot_y = rotation_matrix_y(45);
+  vector<GLfloat> west_rot_y = rotation_matrix_y(-90);
   vector<GLfloat> west_rotated = mat_mult(west_rot_y, west_hom);
 
   // West plane move westward
-  vector<GLfloat> west_trans = translation_matrix(0.0, 0.0, -0.5);
+  vector<GLfloat> west_trans = translation_matrix(-0.5, 0.0, 0.0);
   vector<GLfloat> west_final = mat_mult(west_trans, west_rotated);
+
+  // East plane
+  vector<GLfloat> east_plane = init_plane();
+  vector<GLfloat> east_hom = to_homogeneous_coord(east_plane);
+
+  // East plane rotate
+  vector<GLfloat> east_rot_y = rotation_matrix_y(90);
+  vector<GLfloat> east_rotated = mat_mult(east_rot_y, east_hom);
+
+  // East plane move eastward
+  vector<GLfloat> east_trans = translation_matrix(0.5, 0.0, 0.0);
+  vector<GLfloat> east_final = mat_mult(east_trans, east_rotated);
+
+  // South plane
+  vector<GLfloat> south_plane = init_plane();
+  vector<GLfloat> south_hom = to_homogeneous_coord(south_plane);
+
+  // South plane rotate
+  vector<GLfloat> south_rot_y = rotation_matrix_x(90);
+  vector<GLfloat> south_rotated = mat_mult(south_rot_y, south_hom);
+
+  // South plane move southward
+  vector<GLfloat> south_trans = translation_matrix(0.0, -0.5, 0.0);
+  vector<GLfloat> south_final = mat_mult(south_trans, south_rotated);
+
+  // North plane
+  vector<GLfloat> north_plane = init_plane();
+  vector<GLfloat> north_hom = to_homogeneous_coord(north_plane);
+
+  // North plane rotate
+  vector<GLfloat> north_rot_y = rotation_matrix_x(-90);
+  vector<GLfloat> north_rotated = mat_mult(north_rot_y, north_hom);
+
+  // North plane move northward
+  vector<GLfloat> north_trans = translation_matrix(0.0, 0.5, 0.0);
+  vector<GLfloat> north_final = mat_mult(north_trans, north_rotated);
 
   // Concatenate all planes
   vector<GLfloat> concat;
-  concat.insert( concat.end(), front_hom.begin(), front_hom.end() );
-  concat.insert( concat.end(), translated.begin(), translated.end() );
+  concat.insert( concat.end(), front_final.begin(), front_final.end() );
   concat.insert( concat.end(), back_final.begin(), back_final.end() );
-  concat.insert( concat.end(), west_rotated.begin(), west_rotated.end() );
+  concat.insert( concat.end(), west_final.begin(), west_final.end() );
+  concat.insert( concat.end(), east_final.begin(), east_final.end() );
+  concat.insert( concat.end(), south_final.begin(), south_final.end() );
+  concat.insert( concat.end(), north_final.begin(), north_final.end() );
 
   // Return in cartesian coordinates
   return to_cartesian_coord(concat);
