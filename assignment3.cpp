@@ -149,7 +149,25 @@ vector<GLfloat> translation_matrix(float dx, float dy, float dz) {
 vector<GLfloat> scaling_matrix(float sx, float sy, float sz) {
   vector<GLfloat> scale_mat;
 
-  // TODO: Define scaling matrix
+  scale_mat.push_back(sx);
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(0.0);
+
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(sy);
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(0.0);
+
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(sz);
+  scale_mat.push_back(0.0);
+
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(0.0);
+  scale_mat.push_back(1.0);
 
   return scale_mat;
 }
@@ -265,8 +283,6 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 vector<GLfloat> build_cube() {
   vector<GLfloat> result;
 
-  // TODO: Create a unit cube by transforming a set of planes
-
   // Front plane
   vector<GLfloat> front_plane = init_plane();
 
@@ -352,6 +368,64 @@ vector<GLfloat> build_cube() {
   return to_cartesian_coord(concat);
 }
 
+// Builds a unit cube centered at the origin
+vector<GLfloat> build_table() {
+  vector<GLfloat> result;
+
+  vector<GLfloat> top = build_cube();
+  vector<GLfloat> top_hom = to_homogeneous_coord(top);
+  vector<GLfloat> scale_mat = scaling_matrix(1, 0.1, 1);
+  vector<GLfloat> top_scaled = mat_mult(scale_mat, top_hom);
+
+  // Southwest Leg
+  vector<GLfloat> sw_leg = build_cube();
+  vector<GLfloat> sw_leg_hom = to_homogeneous_coord(sw_leg);
+  vector<GLfloat> leg_scale_mat = scaling_matrix(0.1, 2, 0.1);
+  vector<GLfloat> sw_leg_scaled = mat_mult(leg_scale_mat, sw_leg_hom);
+
+  // Southwest Leg Translate
+  vector<GLfloat> sw_leg_trans = translation_matrix(-0.4, -1, 0.4);
+  vector<GLfloat> sw_leg_moved = mat_mult(sw_leg_trans, sw_leg_scaled);
+  sw_leg = sw_leg_moved;
+
+  // Southeast Leg
+  vector<GLfloat> se_leg = build_cube();
+  vector<GLfloat> se_leg_hom = to_homogeneous_coord(se_leg);
+  vector<GLfloat> se_leg_scaled = mat_mult(leg_scale_mat, se_leg_hom);
+
+  // Southeast Leg Translate
+  vector<GLfloat> se_leg_trans = translation_matrix(0.4, -1, 0.4);
+  vector<GLfloat> se_leg_moved = mat_mult(se_leg_trans, se_leg_scaled);
+  se_leg = se_leg_moved;
+
+  // Northwest Leg
+  vector<GLfloat> nw_leg = build_cube();
+  vector<GLfloat> nw_leg_hom = to_homogeneous_coord(nw_leg);
+  vector<GLfloat> nw_leg_scaled = mat_mult(leg_scale_mat, nw_leg_hom);
+  vector<GLfloat> nw_leg_trans = translation_matrix(-0.4, -1, -0.4);
+  vector<GLfloat> nw_leg_moved = mat_mult(nw_leg_trans, nw_leg_scaled);
+  nw_leg = nw_leg_moved;
+
+  // Northeast Leg
+  vector<GLfloat> ne_leg = build_cube();
+  vector<GLfloat> ne_leg_hom = to_homogeneous_coord(ne_leg);
+  vector<GLfloat> ne_leg_scaled = mat_mult(leg_scale_mat, ne_leg_hom);
+  vector<GLfloat> ne_leg_trans = translation_matrix(0.4, -1, -0.4);
+  vector<GLfloat> ne_leg_moved = mat_mult(ne_leg_trans, ne_leg_scaled);
+  ne_leg = ne_leg_moved;
+
+  // Concatenate all parts
+  vector<GLfloat> concat;
+  concat.insert( concat.end(), top_scaled.begin(), top_scaled.end() );
+  concat.insert( concat.end(), sw_leg.begin(), sw_leg.end() );
+  concat.insert( concat.end(), se_leg.begin(), se_leg.end() );
+  concat.insert( concat.end(), nw_leg.begin(), nw_leg.end() );
+  concat.insert( concat.end(), ne_leg.begin(), ne_leg.end() );
+
+  // result = to_cartesian_coord(concat);
+  return concat;
+}
+
 /**************************************************
  *            Camera and World Modeling           *
  *                                                *
@@ -388,6 +462,9 @@ void init_camera() {
 
   // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
   gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+  // TODO: doubling the position does NOT work
+  // gluLookAt(4.0, 12.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 // Construct the scene using objects built from cubes/prisms
@@ -395,9 +472,27 @@ vector<GLfloat> init_scene() {
   vector<GLfloat> scene;
 
   // TODO: Build your scene here
-  scene = build_cube();
+  vector<GLfloat> cube = build_cube();
+  vector<GLfloat> cube_hom = to_homogeneous_coord(cube);
+  vector<GLfloat> scale_mat = scaling_matrix(2, 1, 1);
+  vector<GLfloat> cube_scaled = mat_mult(scale_mat, cube_hom);
 
-  return scene;
+  scene = to_cartesian_coord(cube_scaled);
+
+  vector<GLfloat> table_orig = build_table();
+  table_orig = to_cartesian_coord(table_orig);
+
+  vector<GLfloat> table = build_table();
+  vector<GLfloat> table_trans = translation_matrix(-1.5, 0, 1.5);
+  table = mat_mult(table_trans, table);
+  table = to_cartesian_coord(table);
+
+  // Concatenate all objects
+  vector<GLfloat> concat;
+  concat.insert( concat.end(), table_orig.begin(), table_orig.end() );
+  concat.insert( concat.end(), table.begin(), table.end() );
+
+  return concat;
 }
 
 // Construct the color mapping of the scene
@@ -438,9 +533,9 @@ void idle_func() {
 
 int main(int argc, char **argv) {
   vector<GLfloat> west_rot_y = rotation_matrix_y(45);
-  cout << dump(west_rot_y);
+  // cout << dump(west_rot_y);
 
-  debug(__LINE__, "blah", 3);
+  // debug(__LINE__, "blah", 3);
 
 
   // Initialize GLUT
