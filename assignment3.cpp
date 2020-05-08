@@ -423,6 +423,66 @@ vector<GLfloat> build_table() {
   return concat;
 }
 
+// Builds a unit cube centered at the origin
+vector<GLfloat> build_couch() {
+  vector<GLfloat> result;
+
+  // Couch Base
+  vector<GLfloat> base = build_cube();
+  vector<GLfloat> base_hom = to_homogeneous_coord(base);
+  vector<GLfloat> scale_mat = scaling_matrix(2, 0.7, 1);
+  vector<GLfloat> base_scaled = mat_mult(scale_mat, base_hom);
+  base = base_scaled;
+
+  // Couch Base Cushion
+  vector<GLfloat> base_cushion = build_cube();
+  vector<GLfloat> base_cushion_hom = to_homogeneous_coord(base_cushion);
+  vector<GLfloat> base_cushion_scale_mat = scaling_matrix(1.5, 0.7, 1);
+  vector<GLfloat> base_cushion_scaled = mat_mult(base_cushion_scale_mat, base_cushion_hom);
+  vector<GLfloat> base_cushion_trans = translation_matrix(0, 0.7, 0);
+  vector<GLfloat> base_cushion_moved = mat_mult(base_cushion_trans, base_cushion_scaled);
+  base_cushion = base_cushion_moved;
+
+  // Couch West Arm
+  vector<GLfloat> wa = build_cube();
+  vector<GLfloat> wa_hom = to_homogeneous_coord(wa);
+  vector<GLfloat> wa_scale_mat = scaling_matrix(0.25, 1, 1);
+  vector<GLfloat> wa_scaled = mat_mult(wa_scale_mat, wa_hom);
+  vector<GLfloat> wa_trans = translation_matrix(-0.9, 0.9, 0);
+  vector<GLfloat> wa_moved = mat_mult(wa_trans, wa_scaled);
+  wa = wa_moved;
+
+  // Couch East Arm
+  vector<GLfloat> ea = build_cube();
+  vector<GLfloat> ea_hom = to_homogeneous_coord(ea);
+  vector<GLfloat> ea_scale_mat = scaling_matrix(0.25, 1, 1);
+  vector<GLfloat> ea_scaled = mat_mult(ea_scale_mat, ea_hom);
+  vector<GLfloat> ea_trans = translation_matrix(0.9, 0.9, 0);
+  vector<GLfloat> ea_moved = mat_mult(ea_trans, ea_scaled);
+  ea = ea_moved;
+
+  // Couch Back Cushion
+  vector<GLfloat> back = build_cube();
+  vector<GLfloat> back_hom = to_homogeneous_coord(back);
+  vector<GLfloat> back_scale_mat = scaling_matrix(2, 2, 0.5);
+  vector<GLfloat> back_scaled = mat_mult(back_scale_mat, back_hom);
+  vector<GLfloat> back_trans = translation_matrix(0, 1, -0.7);
+  vector<GLfloat> back_moved = mat_mult(back_trans, back_scaled);
+  back = back_moved;
+
+  // Concatenate all parts
+  vector<GLfloat> concat;
+  concat.insert( concat.end(), base.begin(), base.end() );
+  concat.insert( concat.end(), base_cushion.begin(), base_cushion.end() );
+  concat.insert( concat.end(), wa.begin(), wa.end() );
+  concat.insert( concat.end(), ea.begin(), ea.end() );
+  concat.insert( concat.end(), back.begin(), back.end() );
+
+  // result = to_cartesian_coord(concat);
+  return concat;
+}
+
+
 /**************************************************
  *            Camera and World Modeling           *
  *                                                *
@@ -476,18 +536,25 @@ vector<GLfloat> init_scene() {
 
   scene = to_cartesian_coord(cube_scaled);
 
+  // Original Table
   vector<GLfloat> table_orig = build_table();
   table_orig = to_cartesian_coord(table_orig);
 
+  // Southwest Table
   vector<GLfloat> table = build_table();
   vector<GLfloat> table_trans = translation_matrix(-1.5, 0, 1.5);
   table = mat_mult(table_trans, table);
   table = to_cartesian_coord(table);
 
+  // Couch
+  vector<GLfloat> couch = build_couch();
+  couch = to_cartesian_coord(couch);
+
   // Concatenate all objects
   vector<GLfloat> concat;
-  concat.insert( concat.end(), table_orig.begin(), table_orig.end() );
+  // concat.insert( concat.end(), table_orig.begin(), table_orig.end() );
   concat.insert( concat.end(), table.begin(), table.end() );
+  concat.insert( concat.end(), couch.begin(), couch.end() );
 
   return concat;
 }
