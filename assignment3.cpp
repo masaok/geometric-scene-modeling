@@ -1,15 +1,16 @@
 /***
  Assignment-3: Geometric Modeling of a Scene
 
- Name: Wong, Alex (Please write your name in Last Name, First Name format)
+ Name: Kitamura, Masao
 
- Collaborators: Doe, John; Doe, Jane
- ** Note: although the assignment should be completed individually
- you may speak with classmates on high level algorithmic concepts. Please
- list their names in this section
+ Collaborators: 
+    Wong, Alex
+    Njoo, Lucille
 
- Project Summary: A short paragraph (3-4 sentences) describing the work you
- did for the project.
+ Project Summary: 
+    - Built the unit cube from planes
+    - Built the scene by manipulating multiple unit cubes
+    - Rotated the scene to see it from muliple angles
  ***/
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -466,7 +467,7 @@ vector<GLfloat> build_couch() {
   vector<GLfloat> back_hom = to_homogeneous_coord(back);
   vector<GLfloat> back_scale_mat = scaling_matrix(2, 2, 0.5);
   vector<GLfloat> back_scaled = mat_mult(back_scale_mat, back_hom);
-  vector<GLfloat> back_trans = translation_matrix(0, 1, -0.7);
+  vector<GLfloat> back_trans = translation_matrix(0, 0.7, -0.75);
   vector<GLfloat> back_moved = mat_mult(back_trans, back_scaled);
   back = back_moved;
 
@@ -536,23 +537,20 @@ vector<GLfloat> init_scene() {
 
   scene = to_cartesian_coord(cube_scaled);
 
-  // Original Table
-  vector<GLfloat> table_orig = build_table();
-  table_orig = to_cartesian_coord(table_orig);
-
   // Southwest Table
   vector<GLfloat> table = build_table();
-  vector<GLfloat> table_trans = translation_matrix(-1.5, 0, 1.5);
+  vector<GLfloat> table_trans = translation_matrix(0, 1.5, 1.5);
   table = mat_mult(table_trans, table);
   table = to_cartesian_coord(table);
 
   // Couch
   vector<GLfloat> couch = build_couch();
+  vector<GLfloat> couch_trans = translation_matrix(0, 0, 0);
+  couch = mat_mult(couch_trans, couch);
   couch = to_cartesian_coord(couch);
 
   // Concatenate all objects
   vector<GLfloat> concat;
-  // concat.insert( concat.end(), table_orig.begin(), table_orig.end() );
   concat.insert( concat.end(), table.begin(), table.end() );
   concat.insert( concat.end(), couch.begin(), couch.end() );
 
@@ -572,6 +570,11 @@ void display_func() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   // TODO: Rotate the scene using the scene vector
   vector<GLfloat> scene = SCENE;
+  vector<GLfloat> scene_hom = to_homogeneous_coord(scene);
+  vector<GLfloat> rot_y = rotation_matrix_y(THETA);
+  vector<GLfloat> scene_rotated = mat_mult(rot_y, scene_hom);
+  scene = to_cartesian_coord(scene_rotated);
+  
   GLfloat* scene_vertices = vector2array(scene);
   GLfloat* color_vertices = vector2array(COLOR);
   // Pass the scene vertex pointer
